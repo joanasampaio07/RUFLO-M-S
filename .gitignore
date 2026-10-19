@@ -1,0 +1,13 @@
+# Ruflo local secrets and runtime data
+.env
+.env.local
+.env.*.local
+claude-flow.config.json
+node_modules/
+.swarm/
+.claude/
+.claude-flow/data/
+.claude-flow/logs/
+.claude-flow/sessions/
+*.pid
+*.db

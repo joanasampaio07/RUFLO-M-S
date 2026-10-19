@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-10-19T12:09:14.478Z",
+  "backedUp": true,
+  "backups": [
+    {
+      "backedUp": true,
+      "path": "C:\\Users\\Admin\\.gemini\\antigravity-ide\\scratch\\ruflo-dashboard\\.swarm\\backups\\memory-2026-10-19T12-09-14-466Z.db",
+      "sizeBytes": 172032,
+      "rotatedAway": [],
+      "dbPath": "C:\\Users\\Admin\\.gemini\\antigravity-ide\\scratch\\ruflo-dashboard\\.swarm\\memory.db"
+    },
+    {
+      "backedUp": false,
+      "skipped": "no-db",
+      "dbPath": "C:\\Users\\Admin\\.gemini\\antigravity-ide\\scratch\\ruflo-dashboard\\.swarm\\agentdb-memory.db"
+    }
+  ],
+  "path": "C:\\Users\\Admin\\.gemini\\antigravity-ide\\scratch\\ruflo-dashboard\\.swarm\\backups\\memory-2026-10-19T12-09-14-466Z.db",
+  "sizeBytes": 172032,
+  "rotatedAway": 0
+}

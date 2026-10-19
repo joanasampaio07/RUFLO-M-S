@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "installedAt": "2026-10-19T11:58:53.910Z",
+  "files": {
+    "C:\\Users\\Admin\\.gemini\\antigravity-ide\\scratch\\ruflo-dashboard\\.claude\\settings.json": {
+      "plugins": [
+        "ruflo-mods@ruflo",
+        "ruflo-swarm@ruflo",
+        "ruflo-console@ruflo"
+      ],
+      "marketplace": true,
+      "env": true,
+      "claudeInstalled": []
+    }
+  }
+}

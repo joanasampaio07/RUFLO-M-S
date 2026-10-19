@@ -1,0 +1,35 @@
+{
+  "agents": {
+    "agent-1792413602901-azkibi": {
+      "agentId": "agent-1792413602901-azkibi",
+      "agentType": "coder",
+      "status": "idle",
+      "health": 1,
+      "taskCount": 0,
+      "config": {
+        "provider": "anthropic",
+        "timeout": 300,
+        "autoTools": true
+      },
+      "createdAt": "2026-10-19T12:40:02.901Z",
+      "model": "sonnet",
+      "modelRoutedBy": "default"
+    },
+    "agent-1792413795842-zdisnq": {
+      "agentId": "agent-1792413795842-zdisnq",
+      "agentType": "coder",
+      "status": "idle",
+      "health": 1,
+      "taskCount": 0,
+      "config": {
+        "provider": "google",
+        "timeout": 300,
+        "autoTools": true
+      },
+      "createdAt": "2026-10-19T12:43:15.843Z",
+      "model": "sonnet",
+      "modelRoutedBy": "default"
+    }
+  },
+  "version": "3.0.0"
+}

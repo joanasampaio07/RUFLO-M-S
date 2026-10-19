@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌊 Ruflo Agent Cockpit & Swarm Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Glow FX -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- App Wrapper -->
+  <div class="app-layout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">
+          <span class="logo-wave">🌊</span>
+        </div>
+        <div class="brand-text">
+          <h2>RUFLO <span>V3</span></h2>
+          <p>Multi-Agent Mesh Harness</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="tab-cockpit" id="btn-tab-cockpit">
+          <span class="nav-icon">🪐</span>
+          <span class="nav-label">Cockpit Geral</span>
+        </button>
+        <button class="nav-item" data-tab="tab-providers" id="btn-tab-providers">
+          <span class="nav-icon">🧠</span>
+          <span class="nav-label">Provedores & Chave Gemini</span>
+          <span class="nav-badge" id="providers-count-badge">Google</span>
+        </button>
+        <button class="nav-item" data-tab="tab-missions" id="btn-tab-missions">
+          <span class="nav-icon">🎯</span>
+          <span class="nav-label">Central de Missões</span>
+        </button>
+        <button class="nav-item" data-tab="tab-agents" id="btn-tab-agents">
+          <span class="nav-icon">🤖</span>
+          <span class="nav-label">Enxame de Agentes</span>
+        </button>
+        <button class="nav-item" data-tab="tab-terminal" id="btn-tab-terminal">
+          <span class="nav-icon">📟</span>
+          <span class="nav-label">Terminal Ruflo CLI</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status-card">
+          <div class="status-indicator">
+            <span class="status-dot pulse"></span>
+            <span class="status-text" id="daemon-status-text">Daemon Ativo</span>
+          </div>
+          <div class="version-tag">Ruflo v3.57.0 (Localhost)</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="top-bar-left">
+          <h1 id="page-title">Painel de Controle do Enxame</h1>
+          <p class="subtitle" id="page-subtitle">Monitoramento em tempo real do ecossistema Ruflo</p>
+        </div>
+        <div class="top-bar-right">
+          <div class="provider-pill" id="active-provider-pill">
+            <span class="pill-dot"></span>
+            <span id="active-provider-text">Provedor Ativo: Google Gemini</span>
+          </div>
+          <button class="btn btn-outline" id="btn-refresh-status">
+            <span class="icon">🔄</span> Atualizar
+          </button>
+          <button class="btn btn-primary" id="btn-quick-mission">
+            <span class="icon">⚡</span> Nova Missão
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Views -->
+      <div class="content-body">
+        
+        <!-- ==================== TAB 1: COCKPIT GERAL ==================== -->
+        <section class="tab-pane active" id="tab-cockpit">
+          
+          <!-- Key Metrics Grid -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Status do Ruflo</span>
+                <span class="metric-icon">⚡</span>
+              </div>
+              <div class="metric-value text-emerald" id="metric-swarm-state">ONLINE</div>
+              <div class="metric-footnote" id="metric-swarm-sub">Daemon de fundo operacional</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Agentes do Mesh</span>
+                <span class="metric-icon">🤖</span>
+              </div>
+              <div class="metric-value text-cyan" id="metric-agents-count">5 Prontos</div>
+              <div class="metric-footnote">Mesh hierárquico V3 configurado</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Memória Vetorial</span>
+                <span class="metric-icon">🧬</span>
+              </div>
+              <div class="metric-value text-purple" id="metric-memory-size">RuVector</div>
+              <div class="metric-footnote">Aprendizado adaptativo entre sessões</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Servidor MCP</span>
+                <span class="metric-icon">🔌</span>
+              </div>
+              <div class="metric-value text-amber" id="metric-mcp-status">Disponível</div>
+              <div class="metric-footnote">Porta padrão / stdio pronta</div>
+            </div>
+          </div>
+
+          <!-- Swarm Visualizer & Quick Actions -->
+          <div class="cockpit-layout-grid">
+            <div class="card card-topology">
+              <div class="card-header">
+                <h3>Topologia do Enxame (Swarm Mesh)</h3>
+                <span class="tag tag-cyan">V3 Mesh 15-Agentes</span>
+              </div>
+              <div class="topology-container">
+                <canvas id="swarm-canvas"></canvas>
+                <div class="topology-legend">
+                  <span class="legend-item"><span class="dot dot-queen"></span> Queen / Coordinator</span>
+                  <span class="legend-item"><span class="dot dot-worker"></span> Especialistas (Coder, Arch, QA)</span>
+                  <span class="legend-item"><span class="dot dot-sec"></span> Guardrail & Segurança</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card card-actions">
+              <div class="card-header">
+                <h3>Ações Rápidas de Diagnóstico</h3>
+              </div>
+              <div class="quick-action-list">
+                <button class="action-btn" id="btn-run-doctor">
+                  <div class="action-btn-icon">🩺</div>
+                  <div class="action-btn-text">
+                    <strong>Rodar Ruflo Doctor</strong>
+                    <span>Testa a saúde dos módulos, plugins e permissões</span>
+                  </div>
+                </button>
+
+                <button class="action-btn" id="btn-test-providers">
+                  <div class="action-btn-icon">🧠</div>
+                  <div class="action-btn-text">
+                    <strong>Verificar Provedores</strong>
+                    <span>Testa chaves de API e modelos conectados</span>
+                  </div>
+                </button>
+
+                <button class="action-btn" id="btn-swarm-pheromone">
+                  <div class="action-btn-icon">🐝</div>
+                  <div class="action-btn-text">
+                    <strong>Inspecionar Feromônios</strong>
+                    <span>Visualiza agendamento adaptativo (ADR-330)</span>
+                  </div>
+                </button>
+
+                <button class="action-btn" id="btn-start-mcp">
+                  <div class="action-btn-icon">🔌</div>
+                  <div class="action-btn-text">
+                    <strong>Comando Servidor MCP</strong>
+                    <span>Exibe comando para plugar no Cursor ou Claude</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Missions / Status Table -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Agentes Especialistas Registrados no Mesh</h3>
+              <span class="tag tag-emerald">Coordenação V3 Habilitada</span>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Papel</th>
+                    <th>Identificador</th>
+                    <th>Provedor Padrão</th>
+                    <th>Modelo Sugerido</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="agents-table-body">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== TAB 2: PROVEDORES & GEMINI KEY ==================== -->
+        <section class="tab-pane" id="tab-providers">
+          <div class="providers-banner">
+            <div class="banner-icon">✨</div>
+            <div class="banner-content">
+              <h2>Configuração do Google Gemini & Outros Provedores</h2>
+              <p>O Ruflo suporta diretamente o <strong>Google Gemini</strong>, permitindo usar chaves gratuitas do Google AI Studio com modelos como <code>gemini-2.5-flash</code> e <code>gemini-2.5-pro</code>. Você <strong>não depende exclusivamente da Anthropic</strong>!</p>
+            </div>
+          </div>
+
+          <div class="providers-grid">
+            <!-- Google Gemini Card -->
+            <div class="provider-config-card active-border">
+              <div class="card-top">
+                <div class="provider-badge google">Google</div>
+                <div class="provider-meta">
+                  <h3>Google Gemini</h3>
+                  <span class="badge badge-recommended">Altamente Recomendado</span>
+                </div>
+              </div>
+              <p class="provider-desc">
+                Acesso direto a <strong>Gemini 2.5 Pro e Flash</strong>. Suporta alta janela de contexto (1M+ tokens), raciocínio e execução de código com excelente relação custo-benefício (e cotas gratuitas generosas).
+              </p>
+              <div class="key-status-indicator" id="gemini-status-indicator">
+                <span class="dot dot-amber"></span> Status: <span id="gemini-status-text">Aguardando chave</span>
+              </div>
+              
+              <div class="form-group">
+                <label for="gemini-api-key">Chave de API do Gemini (Google AI Studio):</label>
+                <div class="input-with-action">
+                  <input type="password" id="gemini-api-key" placeholder="AIzaSy..." class="form-input" />
+                  <button class="btn btn-primary" id="btn-save-gemini">Salvar Chave</button>
+                </div>
+                <small class="helper-text">
+                  Obtenha uma chave gratuita em: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com</a>
+                </small>
+              </div>
+            </div>
+
+            <!-- Anthropic Claude Card -->
+            <div class="provider-config-card">
+              <div class="card-top">
+                <div class="provider-badge anthropic">Claude</div>
+                <div class="provider-meta">
+                  <h3>Anthropic Claude</h3>
+                  <span class="badge badge-info">Nativo</span>
+                </div>
+              </div>
+              <p class="provider-desc">
+                Ideal para uso nativo no Claude Code CLI. Suporta Claude 3.7 Sonnet, Claude 3.5 Sonnet e Haiku para arquitetura de código.
+              </p>
+              <div class="key-status-indicator" id="anthropic-status-indicator">
+                <span class="dot dot-gray"></span> Status: <span id="anthropic-status-text">Opcional</span>
+              </div>
+              <div class="form-group">
+                <label for="anthropic-api-key">Chave de API Anthropic:</label>
+                <div class="input-with-action">
+                  <input type="password" id="anthropic-api-key" placeholder="sk-ant-..." class="form-input" />
+                  <button class="btn btn-outline" id="btn-save-anthropic">Salvar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- OpenRouter Card -->
+            <div class="provider-config-card">
+              <div class="card-top">
+                <div class="provider-badge openrouter">Router</div>
+                <div class="provider-meta">
+                  <h3>OpenRouter</h3>
+                  <span class="badge badge-purple">Multi-Modelos</span>
+                </div>
+              </div>
+              <p class="provider-desc">
+                Uma única chave para usar Gemini, Claude, GPT-4o, DeepSeek e Llama sem precisar gerenciar contas separadas.
+              </p>
+              <div class="form-group">
+                <label for="openrouter-api-key">Chave OpenRouter:</label>
+                <div class="input-with-action">
+                  <input type="password" id="openrouter-api-key" placeholder="sk-or-v1-..." class="form-input" />
+                  <button class="btn btn-outline" id="btn-save-openrouter">Salvar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ollama Card -->
+            <div class="provider-config-card">
+              <div class="card-top">
+                <div class="provider-badge ollama">Local</div>
+                <div class="provider-meta">
+                  <h3>Ollama (100% Gratuito & Local)</h3>
+                  <span class="badge badge-emerald">Sem Custos</span>
+                </div>
+              </div>
+              <p class="provider-desc">
+                Execute modelos no seu próprio computador (Qwen 2.5 Coder, Llama 3.3, DeepSeek R1). Não precisa de chave de API externa.
+              </p>
+              <div class="form-group">
+                <label>Servidor Ollama Local:</label>
+                <div class="input-with-action">
+                  <input type="text" value="http://localhost:11434" readonly class="form-input text-muted" />
+                  <button class="btn btn-outline" id="btn-test-ollama">Testar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 3: CENTRAL DE MISSÕES ==================== -->
+        <section class="tab-pane" id="tab-missions">
+          <div class="card">
+            <div class="card-header">
+              <h3>Disparar Nova Missão de Desenvolvimento com Enxame</h3>
+              <span class="tag tag-purple">Swarm Orchestration</span>
+            </div>
+            
+            <form id="form-mission" class="mission-form">
+              <div class="form-group">
+                <label for="mission-objective">Objetivo da Missão (Descreva o que o enxame de agentes deve construir):</label>
+                <textarea id="mission-objective" class="form-textarea" rows="3" placeholder="Exemplo: Construir uma API REST em Node.js com autenticação JWT, documentação Swagger e testes automatizados."></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-4">
+                  <label for="mission-strategy">Estratégia do Enxame:</label>
+                  <select id="mission-strategy" class="form-select">
+                    <option value="development">Desenvolvimento Completo (Code + Test + Sec)</option>
+                    <option value="architecture">Design e Arquitetura de Sistema</option>
+                    <option value="audit">Auditoria de Segurança & Código</option>
+                    <option value="refactor">Refatoração e Otimização</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-4">
+                  <label for="mission-provider">Provedor de Inteligência:</label>
+                  <select id="mission-provider" class="form-select">
+                    <option value="google" selected>Google Gemini (Recomendado)</option>
+                    <option value="anthropic">Anthropic Claude</option>
+                    <option value="openrouter">OpenRouter</option>
+                    <option value="ollama">Ollama (Local)</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-4">
+                  <label for="mission-coordination">Modo de Coordenação:</label>
+                  <select id="mission-coordination" class="form-select">
+                    <option value="mesh">Hierarchical Mesh V3 (15 Agentes)</option>
+                    <option value="queen">Hive-Mind (Consenso com Rainha)</option>
+                    <option value="autonomous">Autopilot (Trabalha até concluir 100%)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-mission">
+                  <span class="icon">🚀</span> Iniciar Enxame de Agentes
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Mission Execution Feed -->
+          <div class="card" id="card-mission-feed">
+            <div class="card-header">
+              <h3>Linha do Tempo da Missão & Agentes Ativos</h3>
+              <span class="tag tag-emerald" id="mission-status-badge">Aguardando Início</span>
+            </div>
+            <div class="timeline-container" id="mission-timeline">
+              <div class="timeline-empty">
+                Nenhuma missão em execução no momento. Preencha o formulário acima e clique em "Iniciar Enxame de Agentes".
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 4: ENXAME DE AGENTES ==================== -->
+        <section class="tab-pane" id="tab-agents">
+          <div class="section-header-row">
+            <div>
+              <h2>Catálogo de Agentes Especialistas</h2>
+              <p>Agentes autônomos que operam de forma isolada ou cooperativa</p>
+            </div>
+            <button class="btn btn-primary" id="btn-modal-spawn">
+              <span class="icon">➕</span> Spawnar Novo Agente
+            </button>
+          </div>
+
+          <div class="agent-cards-grid" id="agent-cards-container">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- ==================== TAB 5: TERMINAL RUFLO CLI ==================== -->
+        <section class="tab-pane" id="tab-terminal">
+          <div class="card terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-title">Ruflo CLI Interactive Console — v3.57.0</div>
+              <button class="btn btn-sm btn-outline" id="btn-clear-terminal">Limpar</button>
+            </div>
+            
+            <div class="terminal-body" id="terminal-output">
+              <div class="term-line welcome">🌊 Bem-vindo ao console web do Ruflo!</div>
+              <div class="term-line info">Todos os comandos executados aqui rodam diretamente no ambiente local da sua máquina.</div>
+              <div class="term-line prompt">ruflo status</div>
+            </div>
+
+            <div class="terminal-input-bar">
+              <span class="prompt-symbol">ruflo &gt;</span>
+              <input type="text" id="terminal-input" placeholder="Digite um comando (ex: doctor, swarm status, memory search)..." />
+              <button class="btn btn-primary" id="btn-run-term-cmd">Executar</button>
+            </div>
+          </div>
+
+          <div class="quick-terminal-pills">
+            <span>Comandos rápidos:</span>
+            <button class="term-pill" data-cmd="status">status</button>
+            <button class="term-pill" data-cmd="doctor">doctor</button>
+            <button class="term-pill" data-cmd="providers list">providers list</button>
+            <button class="term-pill" data-cmd="swarm status">swarm status</button>
+            <button class="term-pill" data-cmd="memory status">memory status</button>
+            <button class="term-pill" data-cmd="agent list">agent list</button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Spawn Agent -->
+  <div class="modal-overlay" id="modal-spawn">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Spawnar Agente Especialista</h3>
+        <button class="btn-close" id="btn-close-modal">&times;</button>
+      </div>
+      <form id="form-spawn-agent">
+        <div class="form-group">
+          <label for="spawn-type">Tipo / Papel:</label>
+          <select id="spawn-type" class="form-select">
+            <option value="coder">Coder (Desenvolvedor de Código)</option>
+            <option value="architect">Architect (Arquiteto de Software & Modelagem)</option>
+            <option value="tester">Tester (QA & Testes Unitários)</option>
+            <option value="security">Security (Auditoria de Vulnerabilidades & SAST)</option>
+            <option value="researcher">Researcher (Pesquisa e Documentação Técnica)</option>
+            <option value="coordinator">Coordinator (Coordenação de Sub-enxame)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="spawn-name">Nome do Agente:</label>
+          <input type="text" id="spawn-name" class="form-input" placeholder="ex: gemini-coder-1" />
+        </div>
+        <div class="form-group">
+          <label for="spawn-provider">Provedor:</label>
+          <select id="spawn-provider" class="form-select">
+            <option value="google">Google Gemini</option>
+            <option value="anthropic">Anthropic Claude</option>
+            <option value="openrouter">OpenRouter</option>
+            <option value="ollama">Ollama (Local)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="spawn-task">Tarefa Inicial (Opcional):</label>
+          <input type="text" id="spawn-task" class="form-input" placeholder="ex: Criar testes unitários para a rota de login" />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="btn-cancel-spawn">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Spawnar Agente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
