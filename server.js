@@ -12,11 +12,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Helper to run Ruflo CLI commands
+// Helper to run Ruflo or direct commands (node, npm, git, etc.)
 function runRufloCommand(cmdString, cwd = RUFLO_DIR) {
   return new Promise((resolve, reject) => {
-    // Prefix with npx -y ruflo
-    const fullCmd = `npx -y ruflo ${cmdString}`;
+    const trimmed = cmdString.trim();
+    let fullCmd = trimmed;
+
+    // Se o usuário digitar um comando de sistema como node, npm ou git, roda diretamente
+    if (trimmed.startsWith('node ') || trimmed.startsWith('npm ') || trimmed.startsWith('git ') || trimmed === 'dir') {
+      fullCmd = trimmed;
+    } else {
+      const cleanCmd = trimmed.replace(/^ruflo\s+/, '').trim();
+      fullCmd = `npx -y ruflo ${cleanCmd}`;
+    }
+
     exec(fullCmd, { cwd, maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {
       resolve({
         success: !error,
