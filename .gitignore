@@ -11,3 +11,5 @@ node_modules/
 .claude-flow/sessions/
 *.pid
 *.db
+pasta_teste_organizacao/
+cotacoes-historico.json

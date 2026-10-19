@@ -15,6 +15,23 @@
 
 ---
 
+## 🛠️ Scripts Utilitários Criados pelo Enxame
+
+1. **`cotacoes.js` (Monitor e Conversor de Moedas em Tempo Real):**
+   Consulta em tempo real a cotação do Dólar (USD), Euro (EUR), Bitcoin (BTC) e Libra (GBP), exibe variação diária colorida e salva o histórico em `cotacoes-historico.json`.
+   ```bash
+   node cotacoes.js
+   ```
+
+2. **`organizador.js` (Organizador Inteligente de Arquivos):**
+   Varre uma pasta e separa automaticamente arquivos em subpastas categorizadas (`Imagens`, `Documentos`, `Planilhas`, `Compactados`, `Codigos`).
+   ```bash
+   node organizador.js --demo             # Testa em uma pasta segura de exemplo
+   node organizador.js "C:\MinhaPasta"    # Organiza uma pasta específica
+   ```
+
+---
+
 ## 🛠️ Como Executar Localmente
 
 ### 1. Pré-requisitos
